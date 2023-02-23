@@ -57,7 +57,11 @@ export default async function handler(req, res) {
 
 
                     },
+
+
                 },
+
+                // lookup to merge data between to collections (users & listings)
                 {
                     $lookup: {
                         from: "users",
@@ -65,7 +69,19 @@ export default async function handler(req, res) {
                         foreignField: "_id",
                         as: "user",
                     },
+
+
                 },
+
+                // unwind to get the user object instead of array of users
+                {
+                    $unwind: {
+                        path: "$user"
+                    }
+                },
+
+                // projection to get the selected data (1) or not selected (0) we need
+
                 {
                     $project: {
                         user: {
@@ -74,6 +90,7 @@ export default async function handler(req, res) {
                     },
                 },
 
+                // to get the data when matched query
                 {
                     $match: query,
                 },
